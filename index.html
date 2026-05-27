@@ -193,6 +193,17 @@
   }
 }
 
+
+/* ===== 유품정리 접수 폼 ===== */
+.request-form-section{padding:74px 0;background:linear-gradient(180deg,#fbf7ef 0%,#fff 100%)}
+.request-form-box{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:34px}
+.request-form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.request-form-field label{display:block;margin-bottom:7px;font-weight:900;color:var(--navy);letter-spacing:-.03em}
+.request-form-field input,.request-form-field select{width:100%;border:1px solid #d9d2c8;border-radius:15px;padding:15px 16px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink);outline:none}
+.request-form-field input:focus,.request-form-field select:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(216,170,90,.18)}
+.request-form-submit{margin-top:20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}.request-form-submit button{border:0;cursor:pointer;background:var(--navy);color:#fff;padding:15px 28px;border-radius:999px;font-size:17px;font-weight:900;font-family:inherit}.request-form-submit p{margin:0;color:var(--muted);font-size:14px}
+@media(max-width:720px){.request-form-grid{grid-template-columns:1fr}.request-form-box{padding:24px}.request-form-submit button{width:100%}}
+
 </style>
 
 <style>
@@ -274,7 +285,28 @@ img[alt="가족애유품정리 로고"]{
 <section id="process">
 <div class="wrap">
 <div class="section-title">
-<h2>경남 유품정리 진행 과정</h2>
+<section class="request-form-section" id="request">
+  <div class="wrap">
+    <div class="section-title">
+      <h2>유품정리 상담 접수</h2>
+      <p>아래 내용을 남겨주시면 확인 후 빠르게 연락드리겠습니다.</p>
+    </div>
+    <form class="request-form-box" action="https://formsubmit.co/jjubu10@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="가족애유품정리 홈페이지 상담 접수">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <div class="request-form-grid">
+        <div class="request-form-field"><label for="customer_name">이름</label><input id="customer_name" name="이름" type="text" placeholder="이름을 입력해주세요" required></div>
+        <div class="request-form-field"><label for="customer_phone">연락처</label><input id="customer_phone" name="연락처" type="tel" placeholder="010-0000-0000" required></div>
+        <div class="request-form-field"><label for="customer_address">주소</label><input id="customer_address" name="주소" type="text" placeholder="예: 창원시 성산구 / 김해시 장유동" required></div>
+        <div class="request-form-field"><label for="service_type">요청 서비스</label><select id="service_type" name="요청 서비스" required><option value="">요청 서비스를 선택해주세요</option><option value="유품정리">유품정리</option><option value="고독사청소">고독사청소</option><option value="특수청소">특수청소</option><option value="빈집정리">빈집정리</option><option value="폐기물처리">폐기물처리</option><option value="기타 상담">기타 상담</option></select></div>
+      </div>
+      <div class="request-form-submit"><button type="submit">상담 접수 보내기</button><p>입력하신 내용은 상담 목적 외에는 사용하지 않습니다.</p></div>
+    </form>
+  </div>
+</section>
+
+유품정리 진행 과정</h2>
 <p>상담부터 마무리 확인까지 순서대로 안내드립니다.</p>
 </div>
 <div class="steps">
@@ -349,5 +381,9 @@ img[alt="가족애유품정리 로고"]{
       © 2026 가족애유품정리. All rights reserved.
     </div>
 </footer>
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){var form=document.querySelector(".request-form-box");if(!form)return;form.addEventListener("submit",function(){var btn=form.querySelector("button[type='submit']");if(btn){btn.textContent="접수 내용을 보내는 중입니다...";btn.disabled=true;}});});
+</script>
 </body>
 </html>
