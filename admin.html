@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>가족애유품정리 관리자 도구</title>
+<style>
+:root{
+  --navy:#172b3a;
+  --blue:#235d72;
+  --gold:#d8aa5a;
+  --cream:#fbf7ef;
+  --line:#e7e1d7;
+  --muted:#65717c;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Apple SD Gothic Neo,Malgun Gothic,Arial,sans-serif;
+  background:var(--cream);
+  color:#1e252b;
+  line-height:1.7;
+}
+header{
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+  padding:34px 20px;
+}
+.wrap{width:min(1100px,92%);margin:auto}
+h1{margin:0;font-size:34px;letter-spacing:-.06em}
+header p{margin:8px 0 0;color:rgba(255,255,255,.85)}
+.grid{
+  display:grid;
+  grid-template-columns:380px 1fr;
+  gap:22px;
+  padding:34px 0;
+}
+.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:24px;
+  box-shadow:0 12px 28px rgba(23,43,58,.08);
+}
+label{
+  display:block;
+  font-weight:900;
+  color:var(--navy);
+  margin:14px 0 6px;
+}
+input,select,textarea{
+  width:100%;
+  border:1px solid #d9d2c8;
+  border-radius:14px;
+  padding:13px 14px;
+  font-size:15px;
+  font-family:inherit;
+}
+textarea{min-height:110px;resize:vertical}
+button{
+  border:0;
+  border-radius:999px;
+  padding:14px 20px;
+  font-weight:900;
+  cursor:pointer;
+  font-size:15px;
+}
+.btn-main{background:var(--navy);color:#fff;width:100%;margin-top:18px}
+.btn-sub{background:var(--gold);color:#172b3a;margin-right:8px}
+.output{
+  background:#fcfbf7;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:20px;
+  white-space:pre-wrap;
+  min-height:500px;
+}
+.small{font-size:13px;color:var(--muted)}
+.actions{margin-top:14px}
+.badge{
+  display:inline-block;
+  background:#f1e5ce;
+  color:#4b3b20;
+  border-radius:999px;
+  padding:5px 10px;
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>가족애유품정리 관리자 도구</h1>
+    <p>지역명과 키워드를 입력하면 블로그·워드프레스용 홍보글 초안을 자동 생성합니다.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <section class="panel">
+      <span class="badge">블로그 자동 초안 생성</span>
+
+      <label>지역명</label>
+      <input id="region" placeholder="예: 창원시 의창구 동읍">
+
+      <label>메인 키워드</label>
+      <input id="keyword" placeholder="예: 유품정리">
+
+      <label>작업 유형</label>
+      <select id="service">
+        <option value="유품정리">유품정리</option>
+        <option value="고독사청소">고독사청소</option>
+        <option value="특수청소">특수청소</option>
+        <option value="빈집정리">빈집정리</option>
+        <option value="폐기물처리">폐기물처리</option>
+      </select>
+
+      <label>현장 형태</label>
+      <select id="place">
+        <option value="아파트">아파트</option>
+        <option value="단독주택">단독주택</option>
+        <option value="빌라">빌라</option>
+        <option value="원룸">원룸</option>
+        <option value="상가">상가</option>
+      </select>
+
+      <label>추가로 강조할 내용</label>
+      <textarea id="memo" placeholder="예: 중요서류 확인, 폐기물 분류, 소독 작업, 빠른 상담 등"></textarea>
+
+      <button class="btn-main" onclick="generatePost()">글 생성하기</button>
+
+      <p class="small">
+        생성된 글은 네이버 블로그, 워드프레스, 카페 홍보글에 맞게 복사해서 사용할 수 있습니다.
+      </p>
+    </section>
+
+    <section class="panel">
+      <span class="badge">생성 결과</span>
+      <div id="output" class="output">왼쪽 정보를 입력한 뒤 [글 생성하기]를 눌러주세요.</div>
+      <div class="actions">
+        <button class="btn-sub" onclick="copyOutput()">본문 복사</button>
+        <button class="btn-sub" onclick="downloadTxt()">TXT 다운로드</button>
+        <button class="btn-sub" onclick="downloadHtml()">HTML 다운로드</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+function pick(arr, seed){
+  return arr[seed % arr.length];
+}
+
+function cleanText(v){
+  return (v || "").trim();
+}
+
+function generatePost(){
+  const region = cleanText(document.getElementById("region").value) || "경남";
+  const keyword = cleanText(document.getElementById("keyword").value) || "유품정리";
+  const service = document.getElementById("service").value;
+  const place = document.getElementById("place").value;
+  const memo = cleanText(document.getElementById("memo").value);
+
+  const seed = region.length + keyword.length + service.length + place.length;
+
+  const titles = [
+    `${region} ${keyword} 업체 가족애유품정리 현장 상담 안내`,
+    `${region} ${service} 필요할 때 알아두면 좋은 정리 과정`,
+    `${region} ${keyword} 상담부터 정리까지 차분하게 진행하는 방법`,
+    `${region} ${service} 전문 가족애유품정리 작업 안내`,
+    `${region} ${keyword} 후기형 안내와 방문 상담 기준`
+  ];
+
+  const intro = [
+    `${region}에서 ${keyword}가 필요해지는 순간은 대부분 갑작스럽게 찾아옵니다. 특히 고인의 물건을 정리해야 하는 상황이라면 단순한 청소가 아니라 마음의 부담까지 함께 느껴질 수 있습니다.`,
+    `${region} ${service}는 현장 상황에 따라 작업 범위가 크게 달라집니다. 공간의 크기, 물품의 양, 폐기물 처리 여부, 소독이나 탈취 필요성까지 함께 확인해야 합니다.`,
+    `${region} 지역에서 ${keyword}를 알아보시는 분들은 무엇부터 시작해야 할지 막막한 경우가 많습니다. 가족애유품정리는 상담 단계에서부터 필요한 절차를 차근차근 안내드립니다.`
+  ];
+
+  const body1 = [
+    `이번 안내는 ${region} ${place} 현장에서 자주 문의되는 ${service} 기준으로 정리했습니다. 먼저 보관해야 할 물품과 폐기 가능한 물품을 구분하고, 통장·도장·계약서·사진·귀금속·현금 등 중요한 물건은 별도로 확인하는 과정이 필요합니다.`,
+    `${place} 구조에 따라 운반 동선, 엘리베이터 사용 여부, 차량 진입 가능 여부가 달라질 수 있습니다. 따라서 전화 상담만으로 단정하기보다 현장 상황을 확인한 뒤 정확한 작업 방향을 잡는 것이 좋습니다.`,
+    `${service} 작업은 빠르게 치우는 것보다 중요한 물품을 놓치지 않는 것이 우선입니다. 유족이 찾고 있는 서류나 사진, 추억이 담긴 물건이 있다면 사전에 알려주시면 작업 중 더 세심하게 확인할 수 있습니다.`
+  ];
+
+  const body2 = [
+    `정리 과정에서는 물품 분류, 폐기물 이동, 재활용 가능 품목 구분, 공간 정돈 순서로 진행됩니다. 현장 상태에 따라 냄새 저감, 소독, 오염 정리 등 추가 작업이 필요한 경우도 있습니다.`,
+    `혼자 정리하기 어려운 이유는 단순히 짐의 양 때문만은 아닙니다. 감정적으로 힘든 상황에서 물건 하나하나를 판단해야 하고, 폐기물 처리 기준도 함께 고려해야 하기 때문입니다.`,
+    `가족애유품정리는 ${region} 현장에 맞춰 필요한 작업만 안내하고, 무리한 진행보다는 상황에 맞는 정리 방향을 제안하는 것을 중요하게 생각합니다.`
+  ];
+
+  const faq = [
+    `Q. ${region} ${keyword} 비용은 어떻게 정해지나요?
+A. 공간 크기, 짐의 양, 폐기물 처리량, 차량 진입 가능 여부, 추가 소독이나 탈취 필요 여부에 따라 달라집니다.`,
+
+    `Q. 상담만 받아도 괜찮나요?
+A. 네. 갑작스럽게 정리가 필요한 경우 절차와 준비사항을 먼저 안내받는 것만으로도 도움이 됩니다.`,
+
+    `Q. 중요한 물건은 따로 확인해주나요?
+A. 통장, 도장, 계약서, 사진, 귀금속, 현금, 중요 서류 등은 작업 중 별도로 분류하여 확인을 요청드립니다.`
+  ];
+
+  const title = pick(titles, seed);
+  const description = `${region} ${keyword}, ${service}, 빈집정리, 특수청소 상담 안내. 가족애유품정리가 현장 상황에 맞춰 정리 과정과 방문 견적을 도와드립니다.`;
+
+  let result = "";
+  result += `제목: ${title}\n\n`;
+  result += `SEO 설명: ${description}\n\n`;
+  result += `본문\n\n`;
+  result += `${pick(intro, seed)}\n\n`;
+  result += `${pick(body1, seed + 1)}\n\n`;
+  result += `${pick(body2, seed + 2)}\n\n`;
+
+  if(memo){
+    result += `이번 현장에서 특히 중요하게 확인할 부분은 ${memo}입니다. 이런 부분은 상담 단계에서 미리 공유해주시면 작업 계획을 세우는 데 도움이 됩니다.\n\n`;
+  }
+
+  result += `■ ${region} ${service} 진행 과정\n`;
+  result += `1. 전화 또는 온라인 상담\n`;
+  result += `2. 현장 상황 확인\n`;
+  result += `3. 보관 물품과 폐기 물품 분류\n`;
+  result += `4. 폐기물 처리 및 공간 정돈\n`;
+  result += `5. 필요 시 소독·탈취 작업 안내\n\n`;
+
+  result += `■ 이런 분들께 도움이 됩니다\n`;
+  result += `- 갑작스럽게 ${keyword}가 필요한 분\n`;
+  result += `- ${place} 정리를 혼자 하기 어려운 분\n`;
+  result += `- 중요 서류나 귀중품 확인이 필요한 분\n`;
+  result += `- 빈집정리와 폐기물 처리가 함께 필요한 분\n\n`;
+
+  result += `${faq.join("\n\n")}\n\n`;
+  result += `마무리\n`;
+  result += `${region} ${keyword}는 단순한 정리 작업이 아니라 남겨진 물건과 공간을 조심스럽게 정돈하는 과정입니다. 가족애유품정리는 유족의 입장에서 필요한 부분을 먼저 확인하고, 현장 상황에 맞는 방법으로 상담을 도와드립니다.`;
+
+  document.getElementById("output").textContent = result;
+}
+
+function copyOutput(){
+  const text = document.getElementById("output").textContent;
+  navigator.clipboard.writeText(text);
+  alert("복사되었습니다.");
+}
+
+function downloadTxt(){
+  const text = document.getElementById("output").textContent;
+  const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "blog-post.txt";
+  a.click();
+}
+
+function downloadHtml(){
+  const text = document.getElementById("output").textContent;
+  const escaped = text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/\n/g,"<br>");
+  const html = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>블로그 글</title></head><body>${escaped}</body></html>`;
+  const blob = new Blob([html], {type:"text/html;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "blog-post.html";
+  a.click();
+}
+</script>
+</body>
+</html>
