@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>가족애유품정리 관리자 PRO</title>
+<style>
+:root{
+  --navy:#172b3a;
+  --blue:#235d72;
+  --gold:#d8aa5a;
+  --cream:#fbf7ef;
+  --line:#e7e1d7;
+  --muted:#65717c;
+  --white:#fff;
+  --danger:#b84545;
+  --green:#2f7d5b;
+  --shadow:0 14px 35px rgba(23,43,58,.10);
+  --radius:22px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Apple SD Gothic Neo,Malgun Gothic,Arial,sans-serif;
+  background:var(--cream);
+  color:#1e252b;
+  line-height:1.65;
+}
+a{text-decoration:none;color:inherit}
+header{
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+  padding:28px 20px;
+}
+.wrap{width:min(1280px,94%);margin:auto}
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+}
+h1{margin:0;font-size:32px;letter-spacing:-.06em}
+header p{margin:6px 0 0;color:rgba(255,255,255,.82)}
+.badge{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:999px;
+  padding:8px 13px;
+  font-weight:900;
+}
+.layout{
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:22px;
+  padding:26px 0 46px;
+}
+.sidebar,.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.sidebar{
+  padding:16px;
+  position:sticky;
+  top:16px;
+  height:max-content;
+}
+.menu-btn{
+  width:100%;
+  border:0;
+  background:transparent;
+  text-align:left;
+  padding:13px 14px;
+  border-radius:14px;
+  font-weight:900;
+  cursor:pointer;
+  color:#34414a;
+  font-size:15px;
+}
+.menu-btn.active,.menu-btn:hover{
+  background:var(--navy);
+  color:#fff;
+}
+.panel{padding:24px;margin-bottom:22px}
+.section{display:none}
+.section.active{display:block}
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:18px;
+}
+.section-title h2{
+  margin:0;
+  color:var(--navy);
+  font-size:25px;
+  letter-spacing:-.05em;
+}
+.section-title p{margin:4px 0 0;color:var(--muted)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+label{display:block;font-weight:900;color:var(--navy);margin:13px 0 6px}
+input,select,textarea{
+  width:100%;
+  border:1px solid #d9d2c8;
+  border-radius:14px;
+  padding:13px 14px;
+  font-size:15px;
+  font-family:inherit;
+  background:#fff;
+}
+textarea{min-height:120px;resize:vertical}
+button{
+  border:0;
+  border-radius:999px;
+  padding:13px 18px;
+  font-weight:900;
+  cursor:pointer;
+  font-size:14px;
+  font-family:inherit;
+}
+.btn-main{background:var(--navy);color:#fff}
+.btn-gold{background:var(--gold);color:#172b3a}
+.btn-light{background:#f1e8d8;color:#4d3b1f}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.output{
+  background:#fcfbf7;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  min-height:360px;
+  white-space:pre-wrap;
+}
+.card-list{display:grid;gap:12px}
+.item-card{
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  background:#fff;
+}
+.item-card h3{margin:0 0 6px;color:var(--navy)}
+.item-card p{margin:0;color:var(--muted);font-size:14px}
+.item-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+.tag{
+  background:#f5efe3;
+  border-radius:999px;
+  padding:4px 9px;
+  font-size:12px;
+  font-weight:800;
+  color:#5f4b25;
+}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+.stat{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+}
+.stat strong{display:block;font-size:28px;color:var(--navy)}
+.stat span{color:var(--muted);font-size:14px}
+.small{font-size:13px;color:var(--muted)}
+.notice{
+  background:#fff8e8;
+  border:1px solid #efd49e;
+  border-radius:16px;
+  padding:14px;
+  color:#5c461d;
+  margin-bottom:16px;
+}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{border-bottom:1px solid var(--line);padding:12px;text-align:left;font-size:14px}
+th{color:var(--navy);background:#fbf7ef}
+@media(max-width:980px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static}
+  .grid-2,.grid-3,.stats{grid-template-columns:1fr}
+  .top,.section-title{display:block}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <div>
+      <h1>가족애유품정리 관리자 PRO</h1>
+      <p>블로그 글 생성, 후기 관리, 지역 페이지 관리, 운영 메모를 한 곳에서 관리합니다.</p>
+    </div>
+    <div class="badge">LocalStorage 기반 / 서버 불필요</div>
+  </div>
+</header>
+
+<div class="wrap layout">
+  <aside class="sidebar">
+    <button class="menu-btn active" onclick="showSection('dashboard', this)">대시보드</button>
+    <button class="menu-btn" onclick="showSection('blog', this)">블로그 글 생성</button>
+    <button class="menu-btn" onclick="showSection('reviews', this)">후기 저장</button>
+    <button class="menu-btn" onclick="showSection('regions', this)">지역 관리</button>
+    <button class="menu-btn" onclick="showSection('consults', this)">상담 메모</button>
+    <button class="menu-btn" onclick="showSection('export', this)">백업/내보내기</button>
+  </aside>
+
+  <main>
+    <section id="dashboard" class="section active">
+      <div class="stats">
+        <div class="stat"><strong id="statPosts">0</strong><span>생성 글</span></div>
+        <div class="stat"><strong id="statReviews">0</strong><span>저장 후기</span></div>
+        <div class="stat"><strong id="statRegions">0</strong><span>지역 목록</span></div>
+        <div class="stat"><strong id="statConsults">0</strong><span>상담 메모</span></div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">
+          <div>
+            <h2>최근 생성 글</h2>
+            <p>최근에 만든 블로그 초안 5개입니다.</p>
+          </div>
+        </div>
+        <div id="recentPosts" class="card-list"></div>
+      </div>
+    </section>
+
+    <section id="blog" class="section">
+      <div class="panel">
+        <div class="section-title">
+          <div>
+            <h2>블로그 글 생성</h2>
+            <p>네이버 블로그·워드프레스에 바로 사용할 수 있는 후기형 글을 생성합니다.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>지역명</label>
+            <input id="blogRegion" list="regionList" placeholder="예: 창원시 의창구 동읍">
+
+            <label>메인 키워드</label>
+            <input id="blogKeyword" placeholder="예: 유품정리">
+
+            <label>작업 유형</label>
+            <select id="blogService">
+              <option>유품정리</option>
+              <option>고독사청소</option>
+              <option>특수청소</option>
+              <option>빈집정리</option>
+              <option>폐기물처리</option>
+            </select>
+
+            <label>현장 형태</label>
+            <select id="blogPlace">
+              <option>아파트</option>
+              <option>단독주택</option>
+              <option>빌라</option>
+              <option>원룸</option>
+              <option>상가</option>
+            </select>
+
+            <label>글 스타일</label>
+            <select id="blogStyle">
+              <option value="review">업체 후기형</option>
+              <option value="info">정보 안내형</option>
+              <option value="naver">네이버 블로그형</option>
+              <option value="wordpress">워드프레스 SEO형</option>
+            </select>
+
+            <label>강조 내용</label>
+            <textarea id="blogMemo" placeholder="예: 중요서류 확인, 폐기물 분류, 소독 작업, 빠른 상담"></textarea>
+
+            <div class="actions">
+              <button class="btn-main" onclick="generateBlog()">글 생성</button>
+              <button class="btn-gold" onclick="saveGeneratedPost()">생성 글 저장</button>
+            </div>
+          </div>
+
+          <div>
+            <label>생성 결과</label>
+            <div id="blogOutput" class="output">글을 생성하면 여기에 표시됩니다.</div>
+            <div class="actions">
+              <button class="btn-light" onclick="copyText('blogOutput')">복사</button>
+              <button class="btn-light" onclick="downloadText('blogOutput','blog-post.txt')">TXT 다운로드</button>
+              <button class="btn-light" onclick="clearOutput('blogOutput')">비우기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">
+          <div>
+            <h2>저장된 생성 글</h2>
+            <p>생성 후 저장한 글 목록입니다.</p>
+          </div>
+        </div>
+        <div id="postList" class="card-list"></div>
+      </div>
+    </section>
+
+    <section id="reviews" class="section">
+      <div class="panel">
+        <div class="section-title">
+          <div>
+            <h2>후기 저장</h2>
+            <p>실제 작업 후기나 현장 기록을 저장해두고 블로그 글에 활용합니다.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>지역명</label>
+            <input id="reviewRegion" list="regionList" placeholder="예: 김해시 장유동">
+
+            <label>작업 유형</label>
+            <select id="reviewService">
+              <option>유품정리</option>
+              <option>고독사청소</option>
+              <option>특수청소</option>
+              <option>빈집정리</option>
+              <option>폐기물처리</option>
+            </select>
+
+            <label>현장 형태</label>
+            <input id="reviewPlace" placeholder="예: 아파트, 원룸, 단독주택">
+
+            <label>후기 내용</label>
+            <textarea id="reviewText" placeholder="작업 내용, 중요 물품 확인, 정리 과정 등을 기록하세요."></textarea>
+
+            <button class="btn-main" onclick="saveReview()">후기 저장</button>
+          </div>
+
+          <div>
+            <label>후기 검색</label>
+            <input id="reviewSearch" placeholder="지역명 또는 작업 유형 검색" oninput="renderReviews()">
+            <div id="reviewList" class="card-list" style="margin-top:14px"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="regions" class="section">
+      <div class="panel">
+        <div class="section-title">
+          <div>
+            <h2>지역 관리</h2>
+            <p>자주 사용하는 지역을 저장하고 글 생성 시 자동완성으로 사용합니다.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>지역명 추가</label>
+            <input id="regionInput" placeholder="예: 창원시 의창구 동읍">
+            <div class="actions">
+              <button class="btn-main" onclick="addRegion()">지역 추가</button>
+              <button class="btn-light" onclick="loadDefaultRegions()">기본 지역 샘플 추가</button>
+            </div>
+          </div>
+
+          <div>
+            <label>지역 검색</label>
+            <input id="regionSearch" placeholder="지역명 검색" oninput="renderRegions()">
+            <div id="regionListBox" class="card-list" style="margin-top:14px"></div>
+          </div>
+        </div>
+
+        <datalist id="regionList"></datalist>
+      </div>
+    </section>
+
+    <section id="consults" class="section">
+      <div class="panel">
+        <div class="section-title">
+          <div>
+            <h2>상담 메모</h2>
+            <p>전화 상담이나 문의 내용을 간단히 저장합니다.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>이름</label>
+            <input id="consultName" placeholder="고객명">
+
+            <label>연락처</label>
+            <input id="consultPhone" placeholder="010-0000-0000">
+
+            <label>주소/지역</label>
+            <input id="consultAddress" placeholder="예: 창원시 성산구">
+
+            <label>요청 서비스</label>
+            <select id="consultService">
+              <option>유품정리</option>
+              <option>고독사청소</option>
+              <option>특수청소</option>
+              <option>빈집정리</option>
+              <option>폐기물처리</option>
+            </select>
+
+            <label>상담 메모</label>
+            <textarea id="consultMemo" placeholder="현장 상황, 일정, 특이사항 등"></textarea>
+
+            <button class="btn-main" onclick="saveConsult()">상담 메모 저장</button>
+          </div>
+
+          <div>
+            <label>상담 검색</label>
+            <input id="consultSearch" placeholder="이름, 연락처, 지역 검색" oninput="renderConsults()">
+            <div id="consultList" class="card-list" style="margin-top:14px"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="export" class="section">
+      <div class="panel">
+        <div class="section-title">
+          <div>
+            <h2>백업 / 내보내기</h2>
+            <p>브라우저에 저장된 관리자 데이터를 백업하거나 복원합니다.</p>
+          </div>
+        </div>
+
+        <div class="notice">
+          이 관리자 도구는 서버 없이 브라우저 저장소(LocalStorage)에 데이터를 저장합니다.
+          컴퓨터를 바꾸거나 브라우저 데이터를 삭제하면 내용이 사라질 수 있으니 주기적으로 백업하세요.
+        </div>
+
+        <div class="actions">
+          <button class="btn-main" onclick="exportJSON()">전체 백업 JSON 다운로드</button>
+          <button class="btn-gold" onclick="exportCSV()">상담 메모 CSV 다운로드</button>
+          <button class="btn-light" onclick="document.getElementById('importFile').click()">JSON 복원</button>
+          <button class="btn-danger" onclick="clearAllData()">전체 데이터 삭제</button>
+        </div>
+        <input id="importFile" type="file" accept=".json" style="display:none" onchange="importJSON(event)">
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const STORE_KEYS = {
+  posts: "gajokae_posts",
+  reviews: "gajokae_reviews",
+  regions: "gajokae_regions",
+  consults: "gajokae_consults"
+};
+
+function getData(key){
+  try { return JSON.parse(localStorage.getItem(key) || "[]"); }
+  catch(e){ return []; }
+}
+
+function setData(key, data){
+  localStorage.setItem(key, JSON.stringify(data));
+  refreshAll();
+}
+
+function now(){
+  const d = new Date();
+  return d.toLocaleString("ko-KR");
+}
+
+function uid(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+}
+
+function showSection(id, btn){
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".menu-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  refreshAll();
+}
+
+function pick(arr, seed){
+  return arr[Math.abs(seed) % arr.length];
+}
+
+function clean(v){
+  return (v || "").trim();
+}
+
+function generateBlog(){
+  const region = clean(document.getElementById("blogRegion").value) || "경남";
+  const keyword = clean(document.getElementById("blogKeyword").value) || "유품정리";
+  const service = document.getElementById("blogService").value;
+  const place = document.getElementById("blogPlace").value;
+  const style = document.getElementById("blogStyle").value;
+  const memo = clean(document.getElementById("blogMemo").value);
+  const seed = region.length + keyword.length + service.length + place.length + style.length;
+
+  const titlePatterns = {
+    review: [
+      `${region} ${keyword} 업체 가족애유품정리 작업 후기`,
+      `${region} ${service} 현장 정리 과정 후기`,
+      `${region} ${keyword} 상담부터 마무리까지`
+    ],
+    info: [
+      `${region} ${keyword} 필요할 때 확인할 점`,
+      `${region} ${service} 진행 전 알아둘 내용`,
+      `${region} ${keyword} 비용과 절차 안내`
+    ],
+    naver: [
+      `${region} ${keyword}, 막막할 때 도움되는 정리 과정`,
+      `${region} ${service} 직접 진행하며 느낀 점`,
+      `${region} ${keyword} 차분하게 준비하는 방법`
+    ],
+    wordpress: [
+      `${region} ${keyword} 전문 업체 안내 | 가족애유품정리`,
+      `${region} ${service} 방문 상담 및 정리 절차`,
+      `${region} ${keyword} 고독사청소 빈집정리 상담`
+    ]
+  };
+
+  const intros = [
+    `${region}에서 ${keyword}가 필요해지는 상황은 대부분 갑작스럽게 찾아옵니다. 특히 ${place} 공간에 남겨진 물건을 정리해야 할 때는 단순한 청소보다 더 세심한 과정이 필요합니다.`,
+    `${region} ${service}는 현장마다 상황이 다릅니다. 물품의 양, 보관해야 할 물건, 폐기물 처리 범위, 소독이나 탈취 필요 여부를 함께 확인해야 합니다.`,
+    `${region} 지역에서 ${keyword}를 알아보는 분들은 무엇부터 해야 할지 막막한 경우가 많습니다. 가족애유품정리는 상담 단계에서부터 필요한 절차를 차근차근 안내합니다.`
+  ];
+
+  const bodies = [
+    `작업은 먼저 보관 물품과 폐기 물품을 구분하는 것부터 시작합니다. 통장, 도장, 계약서, 사진, 귀금속, 현금 등 중요한 물건은 별도로 확인하고 유족에게 전달할 수 있도록 분류합니다.`,
+    `${place} 구조에 따라 운반 동선과 작업 시간이 달라질 수 있습니다. 엘리베이터 사용 여부, 차량 진입 가능 여부, 폐기물 반출 조건을 확인한 뒤 작업 순서를 정합니다.`,
+    `혼자 정리하기 어려운 이유는 짐의 양뿐만 아니라 감정적인 부담도 크기 때문입니다. 그래서 작업 과정에서는 속도보다 정확한 분류와 확인을 우선으로 진행합니다.`
+  ];
+
+  const title = pick(titlePatterns[style], seed);
+  const seo = `${region} ${keyword}, ${service}, 빈집정리, 특수청소 상담 안내. 가족애유품정리가 현장 상황에 맞춰 정리 과정과 방문 견적을 도와드립니다.`;
+
+  let result = "";
+  result += `제목: ${title}\n\n`;
+  result += `SEO 설명: ${seo}\n\n`;
+  result += `본문\n\n`;
+  result += `${pick(intros, seed)}\n\n`;
+  result += `${pick(bodies, seed + 1)}\n\n`;
+  result += `정리 과정에서는 물품 분류, 폐기물 이동, 재활용 가능 품목 구분, 공간 정돈 순서로 진행됩니다. 현장 상태에 따라 냄새 저감, 소독, 오염 정리 등 추가 작업이 필요한 경우도 있습니다.\n\n`;
+
+  if(memo){
+    result += `이번 현장에서 특히 중요하게 볼 부분은 ${memo}입니다. 이런 내용은 상담 단계에서 미리 알려주시면 작업 계획을 세우는 데 도움이 됩니다.\n\n`;
+  }
+
+  result += `■ ${region} ${service} 진행 과정\n`;
+  result += `1. 전화 또는 온라인 상담\n`;
+  result += `2. 현장 상황 확인\n`;
+  result += `3. 보관 물품과 폐기 물품 분류\n`;
+  result += `4. 폐기물 처리 및 공간 정돈\n`;
+  result += `5. 필요 시 소독·탈취 작업 안내\n\n`;
+
+  result += `■ 자주 묻는 질문\n`;
+  result += `Q. ${region} ${keyword} 비용은 어떻게 정해지나요?\n`;
+  result += `A. 공간 크기, 짐의 양, 폐기물 처리량, 차량 진입 가능 여부, 추가 소독이나 탈취 필요 여부에 따라 달라집니다.\n\n`;
+  result += `Q. 상담만 받아도 괜찮나요?\n`;
+  result += `A. 네. 절차와 준비사항을 먼저 안내받는 것만으로도 도움이 됩니다.\n\n`;
+  result += `Q. 중요한 물건은 따로 확인해주나요?\n`;
+  result += `A. 통장, 도장, 사진, 계약서, 귀금속, 현금, 중요 서류 등은 작업 중 별도로 분류합니다.\n\n`;
+
+  result += `마무리\n`;
+  result += `${region} ${keyword}는 단순한 정리가 아니라 남겨진 물건과 공간을 조심스럽게 정돈하는 과정입니다. 가족애유품정리는 유족의 입장에서 필요한 부분을 먼저 확인하고, 현장 상황에 맞는 방법으로 상담을 도와드립니다.`;
+
+  document.getElementById("blogOutput").textContent = result;
+}
+
+function saveGeneratedPost(){
+  const text = document.getElementById("blogOutput").textContent;
+  if(!text || text.includes("글을 생성하면")) return alert("먼저 글을 생성해주세요.");
+  const posts = getData(STORE_KEYS.posts);
+  posts.unshift({
+    id: uid(),
+    createdAt: now(),
+    region: clean(document.getElementById("blogRegion").value),
+    keyword: clean(document.getElementById("blogKeyword").value),
+    service: document.getElementById("blogService").value,
+    content: text
+  });
+  setData(STORE_KEYS.posts, posts);
+  alert("저장되었습니다.");
+}
+
+function renderPosts(){
+  const posts = getData(STORE_KEYS.posts);
+  document.getElementById("statPosts").textContent = posts.length;
+  const html = posts.map(p => `
+    <div class="item-card">
+      <h3>${escapeHtml(p.region || "지역 미입력")} ${escapeHtml(p.service || "")}</h3>
+      <p>${escapeHtml((p.content || "").slice(0,130))}...</p>
+      <div class="item-meta">
+        <span class="tag">${escapeHtml(p.createdAt)}</span>
+        <button class="btn-light" onclick="copyRaw('${p.id}','posts')">복사</button>
+        <button class="btn-danger" onclick="deleteItem('${p.id}','posts')">삭제</button>
+      </div>
+    </div>
+  `).join("");
+  document.getElementById("postList").innerHTML = html || "<p class='small'>저장된 글이 없습니다.</p>";
+  document.getElementById("recentPosts").innerHTML = html ? posts.slice(0,5).map(p => `
+    <div class="item-card">
+      <h3>${escapeHtml(p.region || "지역 미입력")} ${escapeHtml(p.service || "")}</h3>
+      <p>${escapeHtml((p.content || "").slice(0,120))}...</p>
+    </div>
+  `).join("") : "<p class='small'>최근 생성 글이 없습니다.</p>";
+}
+
+function saveReview(){
+  const region = clean(document.getElementById("reviewRegion").value);
+  const service = document.getElementById("reviewService").value;
+  const place = clean(document.getElementById("reviewPlace").value);
+  const text = clean(document.getElementById("reviewText").value);
+  if(!region || !text) return alert("지역명과 후기 내용을 입력해주세요.");
+
+  const reviews = getData(STORE_KEYS.reviews);
+  reviews.unshift({id:uid(), createdAt:now(), region, service, place, text});
+  setData(STORE_KEYS.reviews, reviews);
+  document.getElementById("reviewText").value = "";
+  alert("후기가 저장되었습니다.");
+}
+
+function renderReviews(){
+  const q = clean(document.getElementById("reviewSearch")?.value).toLowerCase();
+  const reviews = getData(STORE_KEYS.reviews);
+  document.getElementById("statReviews").textContent = reviews.length;
+  const filtered = reviews.filter(r => !q || `${r.region} ${r.service} ${r.place} ${r.text}`.toLowerCase().includes(q));
+  document.getElementById("reviewList").innerHTML = filtered.map(r => `
+    <div class="item-card">
+      <h3>${escapeHtml(r.region)} ${escapeHtml(r.service)}</h3>
+      <p>${escapeHtml(r.text)}</p>
+      <div class="item-meta">
+        <span class="tag">${escapeHtml(r.place || "현장")}</span>
+        <span class="tag">${escapeHtml(r.createdAt)}</span>
+        <button class="btn-light" onclick="copyValue('${escapeAttr(r.text)}')">복사</button>
+        <button class="btn-danger" onclick="deleteItem('${r.id}','reviews')">삭제</button>
+      </div>
+    </div>
+  `).join("") || "<p class='small'>저장된 후기가 없습니다.</p>";
+}
+
+function addRegion(){
+  const value = clean(document.getElementById("regionInput").value);
+  if(!value) return alert("지역명을 입력해주세요.");
+  const regions = getData(STORE_KEYS.regions);
+  if(!regions.includes(value)) regions.push(value);
+  setData(STORE_KEYS.regions, regions);
+  document.getElementById("regionInput").value = "";
+}
+
+function loadDefaultRegions(){
+  const sample = ["창원시 의창구 동읍","창원시 성산구 상남동","김해시 장유동","양산시 물금읍","진주시 중앙동","거제시 고현동","통영시 무전동"];
+  const regions = Array.from(new Set([...getData(STORE_KEYS.regions), ...sample]));
+  setData(STORE_KEYS.regions, regions);
+}
+
+function renderRegions(){
+  const q = clean(document.getElementById("regionSearch")?.value).toLowerCase();
+  const regions = getData(STORE_KEYS.regions);
+  document.getElementById("statRegions").textContent = regions.length;
+
+  document.getElementById("regionList").innerHTML = regions.map(r => `<option value="${escapeAttr(r)}"></option>`).join("");
+
+  const filtered = regions.filter(r => !q || r.toLowerCase().includes(q));
+  document.getElementById("regionListBox").innerHTML = filtered.map(r => `
+    <div class="item-card">
+      <h3>${escapeHtml(r)}</h3>
+      <div class="item-meta">
+        <button class="btn-light" onclick="copyValue('${escapeAttr(r)}')">복사</button>
+        <button class="btn-danger" onclick="deleteRegion('${escapeAttr(r)}')">삭제</button>
+      </div>
+    </div>
+  `).join("") || "<p class='small'>저장된 지역이 없습니다.</p>";
+}
+
+function deleteRegion(region){
+  const regions = getData(STORE_KEYS.regions).filter(r => r !== region);
+  setData(STORE_KEYS.regions, regions);
+}
+
+function saveConsult(){
+  const item = {
+    id: uid(),
+    createdAt: now(),
+    name: clean(document.getElementById("consultName").value),
+    phone: clean(document.getElementById("consultPhone").value),
+    address: clean(document.getElementById("consultAddress").value),
+    service: document.getElementById("consultService").value,
+    memo: clean(document.getElementById("consultMemo").value)
+  };
+  if(!item.phone && !item.address) return alert("연락처 또는 주소를 입력해주세요.");
+  const consults = getData(STORE_KEYS.consults);
+  consults.unshift(item);
+  setData(STORE_KEYS.consults, consults);
+  document.getElementById("consultMemo").value = "";
+  alert("상담 메모가 저장되었습니다.");
+}
+
+function renderConsults(){
+  const q = clean(document.getElementById("consultSearch")?.value).toLowerCase();
+  const consults = getData(STORE_KEYS.consults);
+  document.getElementById("statConsults").textContent = consults.length;
+  const filtered = consults.filter(c => !q || `${c.name} ${c.phone} ${c.address} ${c.service} ${c.memo}`.toLowerCase().includes(q));
+  document.getElementById("consultList").innerHTML = filtered.map(c => `
+    <div class="item-card">
+      <h3>${escapeHtml(c.name || "이름 없음")} / ${escapeHtml(c.service)}</h3>
+      <p>${escapeHtml(c.address || "")}<br>${escapeHtml(c.phone || "")}<br>${escapeHtml(c.memo || "")}</p>
+      <div class="item-meta">
+        <span class="tag">${escapeHtml(c.createdAt)}</span>
+        <button class="btn-light" onclick="copyValue('${escapeAttr(`${c.name} ${c.phone} ${c.address} ${c.service} ${c.memo}`)}')">복사</button>
+        <button class="btn-danger" onclick="deleteItem('${c.id}','consults')">삭제</button>
+      </div>
+    </div>
+  `).join("") || "<p class='small'>상담 메모가 없습니다.</p>";
+}
+
+function deleteItem(id, type){
+  const key = STORE_KEYS[type];
+  const data = getData(key).filter(x => x.id !== id);
+  setData(key, data);
+}
+
+function copyRaw(id, type){
+  const key = STORE_KEYS[type];
+  const item = getData(key).find(x => x.id === id);
+  if(!item) return;
+  copyValue(item.content || item.text || "");
+}
+
+function copyValue(text){
+  navigator.clipboard.writeText(text || "");
+  alert("복사되었습니다.");
+}
+
+function copyText(id){
+  copyValue(document.getElementById(id).textContent);
+}
+
+function downloadText(id, filename){
+  const text = document.getElementById(id).textContent;
+  const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+function clearOutput(id){
+  document.getElementById(id).textContent = "";
+}
+
+function exportJSON(){
+  const data = {
+    posts:getData(STORE_KEYS.posts),
+    reviews:getData(STORE_KEYS.reviews),
+    regions:getData(STORE_KEYS.regions),
+    consults:getData(STORE_KEYS.consults),
+    exportedAt:now()
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "gajokae-admin-backup.json";
+  a.click();
+}
+
+function importJSON(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const data = JSON.parse(e.target.result);
+      if(data.posts) localStorage.setItem(STORE_KEYS.posts, JSON.stringify(data.posts));
+      if(data.reviews) localStorage.setItem(STORE_KEYS.reviews, JSON.stringify(data.reviews));
+      if(data.regions) localStorage.setItem(STORE_KEYS.regions, JSON.stringify(data.regions));
+      if(data.consults) localStorage.setItem(STORE_KEYS.consults, JSON.stringify(data.consults));
+      refreshAll();
+      alert("복원되었습니다.");
+    }catch(err){
+      alert("JSON 파일을 읽을 수 없습니다.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function exportCSV(){
+  const consults = getData(STORE_KEYS.consults);
+  const rows = [["날짜","이름","연락처","주소","서비스","메모"]];
+  consults.forEach(c => rows.push([c.createdAt,c.name,c.phone,c.address,c.service,c.memo]));
+  const csv = rows.map(row => row.map(v => `"${String(v||"").replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob(["\ufeff" + csv], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "consults.csv";
+  a.click();
+}
+
+function clearAllData(){
+  if(!confirm("정말 모든 관리자 데이터를 삭제할까요?")) return;
+  Object.values(STORE_KEYS).forEach(k => localStorage.removeItem(k));
+  refreshAll();
+}
+
+function escapeHtml(str){
+  return String(str || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function escapeAttr(str){
+  return String(str || "")
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'")
+    .replace(/"/g,"&quot;")
+    .replace(/\n/g," ");
+}
+
+function refreshAll(){
+  renderPosts();
+  renderReviews();
+  renderRegions();
+  renderConsults();
+}
+
+document.addEventListener("DOMContentLoaded", refreshAll);
+</script>
+</body>
+</html>
