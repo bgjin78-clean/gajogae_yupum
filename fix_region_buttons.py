@@ -103,8 +103,8 @@ def main():
     print("git status")
     print("")
     print("확인할 주소:")
-    print("https://gajogae-yupum.netlify.app/")
-    print("https://gajogae-yupum.netlify.app/regions/changwon.html")
+    print("https://gajogae-yupum.com/")
+    print("https://gajogae-yupum.com/regions/changwon.html")
 
 if __name__ == "__main__":
     main()

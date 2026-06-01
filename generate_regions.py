@@ -15,7 +15,7 @@ from datetime import date
 # 7) 기존 한글 URL → 영문 URL 301 리디렉션용 _redirects 자동 생성
 # ==========================================================
 
-SITE_URL = "https://gajogae-yupum.netlify.app"
+SITE_URL = "https://gajogae-yupum.com"
 BRAND = "가족애유품정리"
 PHONE = "010-9242-3895"
 

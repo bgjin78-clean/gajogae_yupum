@@ -4,7 +4,7 @@ import re
 import shutil
 from datetime import date
 
-SITE_URL = "https://gajogae-yupum.netlify.app"
+SITE_URL = "https://gajogae-yupum.com"
 BRAND = "가족애유품정리"
 
 INDEX_FILE = Path("index.html")
