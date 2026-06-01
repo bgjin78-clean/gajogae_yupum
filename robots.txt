@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://gajogae-yupum.netlify.app/sitemap-regions.xml
+Sitemap: https://gajogae-yupum.com/sitemap-regions.xml
