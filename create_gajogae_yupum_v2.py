@@ -359,14 +359,14 @@ def email_script():
 def image_set(seed_text):
     random.seed(seed_text)
 
-    before = random.sample(range(1, 31), 2)
+    # 전·후는 같은 번호(같은 현장)끼리 짝을 맞춤
+    pairs = random.sample(range(1, 101), 4)
     process = random.sample(range(1, 26), 2)
-    after = random.sample(range(1, 31), 4)
 
     return {
-        "before": [f"/images/main/before-{n:02d}.jpg" for n in before],
+        "before": [f"/images/cases/before-{n:03d}.jpg" for n in pairs],
+        "after": [f"/images/cases/after-{n:03d}.jpg" for n in pairs],
         "process": [f"/images/main/process-{n:02d}.jpg" for n in process],
-        "after": [f"/images/main/after-{n:02d}.jpg" for n in after],
     }
 
 def photo_section(region_name="유품정리"):
@@ -383,13 +383,13 @@ def photo_section(region_name="유품정리"):
 
     <div class="photo-grid">
       <div class="photo"><img src="{imgs["before"][0]}" alt="{region_name} 유품정리 전 사진"></div>
+      <div class="photo"><img src="{imgs["after"][0]}" alt="{region_name} 유품정리 후 사진"></div>
       <div class="photo"><img src="{imgs["before"][1]}" alt="{region_name} 유품정리 전 현장"></div>
+      <div class="photo"><img src="{imgs["after"][1]}" alt="{region_name} 유품정리 정리 후"></div>
       <div class="photo"><img src="{imgs["process"][0]}" alt="{region_name} 유품정리 작업중"></div>
       <div class="photo"><img src="{imgs["process"][1]}" alt="{region_name} 유품정리 분류 작업"></div>
-      <div class="photo"><img src="{imgs["after"][0]}" alt="{region_name} 유품정리 완료"></div>
-      <div class="photo"><img src="{imgs["after"][1]}" alt="{region_name} 유품정리 정리 후"></div>
+      <div class="photo"><img src="{imgs["before"][2]}" alt="{region_name} 고독사청소 전"></div>
       <div class="photo"><img src="{imgs["after"][2]}" alt="{region_name} 고독사청소 완료"></div>
-      <div class="photo"><img src="{imgs["after"][3]}" alt="{region_name} 특수청소 완료"></div>
     </div>
 
   </div>
@@ -404,8 +404,8 @@ def case_section(region_name):
         ("원룸 유품정리", imgs["before"][1], f"{region_name} 원룸 현장에서 생활용품, 의류, 소형가전 등을 분류하고 필요한 물품은 별도로 확인했습니다."),
         ("단독주택 유품정리", imgs["process"][0], f"{region_name} 단독주택에서는 방, 거실, 창고, 마당까지 확인하며 정리 범위를 나누어 진행했습니다."),
         ("고독사청소", imgs["process"][1], f"{region_name} 고독사청소 현장은 냄새와 오염 여부를 확인한 뒤 정리, 소독, 탈취 범위를 안내했습니다."),
-        ("특수청소", imgs["after"][0], f"{region_name} 특수청소는 일반 청소로 해결하기 어려운 오염과 방치 흔적을 현장 상태에 맞춰 정리했습니다."),
-        ("빈집정리", imgs["after"][1], f"{region_name} 빈집정리는 상속, 매매, 임대 준비 과정에서 남은 물품과 폐기물을 정리하는 방식으로 진행됩니다."),
+        ("특수청소", imgs["after"][2], f"{region_name} 특수청소는 일반 청소로 해결하기 어려운 오염과 방치 흔적을 현장 상태에 맞춰 정리했습니다."),
+        ("빈집정리", imgs["after"][3], f"{region_name} 빈집정리는 상속, 매매, 임대 준비 과정에서 남은 물품과 폐기물을 정리하는 방식으로 진행됩니다."),
     ]
 
     cards = ""
