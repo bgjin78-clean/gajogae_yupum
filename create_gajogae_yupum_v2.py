@@ -765,6 +765,56 @@ REGION_REVIEWS = {
     ],
 }
 
+
+SERVICE_REVIEWS = [
+    (
+        "쓰레기집청소",
+        "쓰레기가 가득 쌓인 원룸을 맡겼는데, 분류부터 반출까지 하루 만에 정리됐습니다.",
+    ),
+    (
+        "쓰레기집청소",
+        "장기간 방치된 집이라 냄새가 심했는데, 정리 후 공간이 완전히 달라졌습니다.",
+    ),
+    (
+        "쓰레기집청소",
+        "쓰레기집 청소 범위와 비용을 미리 설명해 주셔서 부담 없이 진행했습니다.",
+    ),
+    (
+        "쓰레기집청소",
+        "쌓인 생활쓰레기와 가구를 구분해 처리해 주셔서 이후 관리가 수월해졌습니다.",
+    ),
+    (
+        "쓰레기집청소",
+        "이웃 민원 때문에 급히 문의했는데, 빠르게 일정을 잡아 주셨습니다.",
+    ),
+    (
+        "이사폐기물처리",
+        "이사 후 남은 가구와 박스를 당일 처리해 주셔서 입주 일정에 맞췄습니다.",
+    ),
+    (
+        "이사폐기물처리",
+        "대형 폐기물 반출이 필요했는데, 1톤 기준으로 명확히 안내해 주셨습니다.",
+    ),
+    (
+        "이사폐기물처리",
+        "이사 잔짐과 생활폐기물을 한 번에 처리해 주셔서 편했습니다.",
+    ),
+    (
+        "이사폐기물처리",
+        "계단 작업이 필요한데도 안전하게 반출해 주셨습니다.",
+    ),
+    (
+        "이사폐기물처리",
+        "이사 폐기물 양을 사진으로 보내니 예상 비용을 바로 안내받았습니다.",
+    ),
+]
+
+
+def service_reviews_for(region_name=None):
+    if not region_name:
+        return list(SERVICE_REVIEWS)
+    return [(f"{region_name} {title}", body) for title, body in SERVICE_REVIEWS]
+
 def case_section(region_name):
     imgs = image_set(region_name + "case")
     info = region_info(region_name)
@@ -866,40 +916,42 @@ def case_section(region_name):
 
 def build_reviews(region_name):
     if region_name in REGION_REVIEWS:
-        return REGION_REVIEWS[region_name]
+        base = REGION_REVIEWS[region_name]
+    else:
+        info = region_info(region_name)
+        rng = region_rng(region_name, "reviews")
+        templates = [
+            (
+                f"{region_name} 유품정리",
+                f"{region_name} {info['housing']} 유품정리를 맡겼습니다. {info['focus']}까지 확인해 주셔서 진행이 수월했습니다.",
+                f"{region_name}에서 유품정리를 진행했습니다. 보관할 물건과 정리할 물건을 구분해 주셔서 안심이 됐습니다.",
+                f"{region_name} 유품정리 상담부터 마무리까지 설명이 명확해 가족 모두가 만족했습니다.",
+            ),
+            (
+                f"{region_name} 고독사청소",
+                f"{region_name} 고독사청소가 급했는데, 냄새와 오염 상태를 먼저 확인해 주시고 정리·소독까지 차분히 진행해 주셨습니다.",
+                f"{region_name}에서 고독사청소를 문의했고, 특수청소 필요 범위를 솔직하게 안내받아 맡길 수 있었습니다.",
+                f"{region_name} 고독사청소 후에도 공간이 한결 나아져 감사했습니다.",
+            ),
+            (
+                f"{info['housing']} 정리",
+                f"{region_name}은 {info['housing']}이라 {info['focus']}가 걱정이었는데, 현장에 맞춰 일정을 잡아 주셨습니다.",
+                f"{region_name} 특성상 {info['focus']}가 중요했는데, 작업 전에 동선까지 확인해 주셔서 좋았습니다.",
+                f"{region_name} {info['housing']} 정리 범위를 나눠 진행해 주셔서 부담이 줄었습니다.",
+            ),
+            (
+                "상담·일정 안내",
+                f"{region_name}까지 방문해 현장 상황을 보신 뒤 비용과 일정을 명확히 설명해 주셨습니다. {info['tip']}",
+                f"{region_name} 유품정리 비용(기본 안내 금액)과 추가 가능 범위를 미리 들을 수 있어 상의가 편했습니다.",
+                f"{region_name} 상담 응대가 빨라 급한데도 일정 조율이 가능했습니다.",
+            ),
+        ]
+        base = []
+        for title, *bodies in templates:
+            base.append((title, rng.choice(bodies)))
+        base = base[:4]
 
-    info = region_info(region_name)
-    rng = region_rng(region_name, "reviews")
-    templates = [
-        (
-            f"{region_name} 유품정리",
-            f"{region_name} {info['housing']} 유품정리를 맡겼습니다. {info['focus']}까지 확인해 주셔서 진행이 수월했습니다.",
-            f"{region_name}에서 유품정리를 진행했습니다. 보관할 물건과 정리할 물건을 구분해 주셔서 안심이 됐습니다.",
-            f"{region_name} 유품정리 상담부터 마무리까지 설명이 명확해 가족 모두가 만족했습니다.",
-        ),
-        (
-            f"{region_name} 고독사청소",
-            f"{region_name} 고독사청소가 급했는데, 냄새와 오염 상태를 먼저 확인해 주시고 정리·소독까지 차분히 진행해 주셨습니다.",
-            f"{region_name}에서 고독사청소를 문의했고, 특수청소 필요 범위를 솔직하게 안내받아 맡길 수 있었습니다.",
-            f"{region_name} 고독사청소 후에도 공간이 한결 나아져 감사했습니다.",
-        ),
-        (
-            f"{info['housing']} 정리",
-            f"{region_name}은 {info['housing']}이라 {info['focus']}가 걱정이었는데, 현장에 맞춰 일정을 잡아 주셨습니다.",
-            f"{region_name} 특성상 {info['focus']}가 중요했는데, 작업 전에 동선까지 확인해 주셔서 좋았습니다.",
-            f"{region_name} {info['housing']} 정리 범위를 나눠 진행해 주셔서 부담이 줄었습니다.",
-        ),
-        (
-            "상담·일정 안내",
-            f"{region_name}까지 방문해 현장 상황을 보신 뒤 비용과 일정을 명확히 설명해 주셨습니다. {info['tip']}",
-            f"{region_name} 유품정리 비용(기본 안내 금액)과 추가 가능 범위를 미리 들을 수 있어 상의가 편했습니다.",
-            f"{region_name} 상담 응대가 빨라 급한데도 일정 조율이 가능했습니다.",
-        ),
-    ]
-    picks = []
-    for title, *bodies in templates:
-        picks.append((title, rng.choice(bodies)))
-    return picks[:4]
+    return base + service_reviews_for(region_name)
 
 
 def review_section(region_name=None):
@@ -909,7 +961,7 @@ def review_section(region_name=None):
         ("깔끔한 정리", "보관 물품을 따로 정리해 주셔서 큰 도움이 되었습니다."),
         ("신속한 진행", "예상보다 빠르게 정리가 완료되어 만족했습니다."),
         ("맞춤 안내", "경남·부산·울산 현장 특성에 맞춰 작업 범위를 설명해 주셨습니다."),
-    ]
+    ] + list(SERVICE_REVIEWS)
 
     cards = "\n".join(
         f"""      <div class="review-card">
